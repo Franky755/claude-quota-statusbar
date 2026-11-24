@@ -1,0 +1,111 @@
+{
+  "name": "claude-quota-statusbar",
+  "displayName": "%ext.displayName%",
+  "description": "%ext.description%",
+  "publisher": "Franky755",
+  "version": "1.0.0",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "author": {
+    "name": "Tran Hiep (Franky755)",
+    "url": "https://github.com/Franky755"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Franky755/claude-quota-statusbar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Franky755/claude-quota-statusbar/issues"
+  },
+  "homepage": "https://github.com/Franky755/claude-quota-statusbar#readme",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "quota",
+    "usage",
+    "rate-limit",
+    "statusbar"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "claudeQuota.refresh",
+        "title": "%cmd.refresh%"
+      }
+    ],
+    "configuration": {
+      "title": "%cfg.title%",
+      "properties": {
+        "claudeQuota.language": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "vi",
+            "en"
+          ],
+          "default": "auto",
+          "enumDescriptions": [
+            "%cfg.language.auto%",
+            "%cfg.language.vi%",
+            "%cfg.language.en%"
+          ],
+          "description": "%cfg.language.desc%"
+        },
+        "claudeQuota.showScopedOnStatusBar": {
+          "type": "boolean",
+          "default": false,
+          "description": "%cfg.showScoped.desc%"
+        },
+        "claudeQuota.warningThreshold": {
+          "type": "number",
+          "default": 80,
+          "minimum": 50,
+          "maximum": 99,
+          "description": "%cfg.warningThreshold.desc%"
+        },
+        "claudeQuota.errorThreshold": {
+          "type": "number",
+          "default": 95,
+          "minimum": 60,
+          "maximum": 100,
+          "description": "%cfg.errorThreshold.desc%"
+        },
+        "claudeQuota.refreshIntervalSeconds": {
+          "type": "number",
+          "default": 60,
+          "minimum": 30,
+          "maximum": 600,
+          "description": "%cfg.refreshInterval.desc%"
+        },
+        "claudeQuota.alignment": {
+          "type": "string",
+          "enum": [
+            "right",
+            "left"
+          ],
+          "default": "right",
+          "description": "%cfg.alignment.desc%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "generate-icon": "node scripts/generate-icon.js",
+    "check": "node --check extension.js",
+    "test": "node test/extension.test.js",
+    "package": "npx --yes @vscode/vsce package --no-dependencies",
+    "publish:vsce": "npx --yes @vscode/vsce publish --no-dependencies",
+    "publish:ovsx": "npx --yes ovsx publish"
+  }
+}
+

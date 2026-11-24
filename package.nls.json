@@ -1,0 +1,16 @@
+{
+  "ext.displayName": "Claude Quota Status Bar",
+  "ext.description": "Real-time Claude 5-hour session, 7-day weekly, and model-scoped (Fable) quota percentages with reset countdowns on the VS Code status bar.",
+  "cmd.refresh": "Claude Quota: Refresh Now",
+  "cfg.title": "Claude Quota Status Bar",
+  "cfg.language.desc": "Display language for status bar labels and tooltip.",
+  "cfg.language.auto": "Detect automatically from VS Code or system locale",
+  "cfg.language.vi": "Vietnamese (Tiếng Việt)",
+  "cfg.language.en": "English",
+  "cfg.showScoped.desc": "Also show model-scoped weekly quota (e.g. Fable) directly on the status bar instead of tooltip only.",
+  "cfg.warningThreshold.desc": "Usage percentage threshold to highlight the status bar with a warning color.",
+  "cfg.errorThreshold.desc": "Usage percentage threshold to highlight the status bar with an error color.",
+  "cfg.refreshInterval.desc": "Shared cache refresh interval in seconds across all open VS Code windows (minimum 30s to avoid HTTP 429).",
+  "cfg.alignment.desc": "Status bar placement (right or left)."
+}
+

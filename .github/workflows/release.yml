@@ -1,0 +1,57 @@
+name: CI & Publish Extension
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm run check
+      - run: npm test
+
+  release:
+    name: Package VSIX & Publish
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate Icon & Package VSIX
+        run: |
+          npm run generate-icon
+          npx --yes @vscode/vsce package --no-dependencies -o claude-quota-statusbar.vsix
+      - name: Upload VSIX to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: claude-quota-statusbar.vsix
+          generate_release_notes: true
+      - name: Publish to VS Code Marketplace (if VSCE_PAT configured)
+        if: env.VSCE_PAT != ''
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx --yes @vscode/vsce publish --packagePath claude-quota-statusbar.vsix -p "$VSCE_PAT"
+      - name: Publish to Open VSX Registry (if OVSX_PAT configured)
+        if: env.OVSX_PAT != ''
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx --yes ovsx publish claude-quota-statusbar.vsix -p "$OVSX_PAT"
+
