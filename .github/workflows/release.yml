@@ -6,9 +6,11 @@ on:
     tags: ['v*']
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   test:
@@ -28,7 +30,7 @@ jobs:
   release:
     name: Package VSIX & Publish
     needs: test
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
       VSCE_PAT: ${{ secrets.VSCE_PAT }}
@@ -43,14 +45,19 @@ jobs:
           npm run generate-icon
           npx --yes @vscode/vsce package --no-dependencies -o claude-quota-statusbar.vsix
       - name: Upload VSIX to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: claude-quota-statusbar.vsix
           generate_release_notes: true
-      - name: Publish to VS Code Marketplace (if VSCE_PAT configured)
-        if: env.VSCE_PAT != ''
-        run: npx --yes @vscode/vsce publish --packagePath claude-quota-statusbar.vsix -p "$VSCE_PAT"
+      - name: Publish to VS Code Marketplace (OIDC Trusted Publishing / VSCE_PAT)
+        run: |
+          if [ -n "$VSCE_PAT" ]; then
+            npx --yes @vscode/vsce publish --packagePath claude-quota-statusbar.vsix --skip-duplicate -p "$VSCE_PAT"
+          else
+            npx --yes @vscode/vsce publish --packagePath claude-quota-statusbar.vsix --oidc --skip-duplicate
+          fi
       - name: Publish to Open VSX Registry (if OVSX_PAT configured)
         if: env.OVSX_PAT != ''
-        run: npx --yes ovsx publish claude-quota-statusbar.vsix -p "$OVSX_PAT"
+        run: npx --yes ovsx publish claude-quota-statusbar.vsix --skip-duplicate -p "$OVSX_PAT"
 
