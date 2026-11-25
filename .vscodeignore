@@ -6,4 +6,5 @@ scripts/**
 test/**
 *.vsix
 .gitignore
-
+images/**
+!images/icon.png

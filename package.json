@@ -3,7 +3,7 @@
   "displayName": "%ext.displayName%",
   "description": "%ext.description%",
   "publisher": "Franky755",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "icon": "images/icon.png",
   "author": {
@@ -30,7 +30,9 @@
     "quota",
     "usage",
     "rate-limit",
-    "statusbar"
+    "statusbar",
+    "usage-alert",
+    "cost"
   ],
   "main": "./extension.js",
   "activationEvents": [
@@ -41,6 +43,18 @@
       {
         "command": "claudeQuota.refresh",
         "title": "%cmd.refresh%"
+      },
+      {
+        "command": "claudeQuota.showMenu",
+        "title": "%cmd.showMenu%"
+      },
+      {
+        "command": "claudeQuota.showLog",
+        "title": "%cmd.showLog%"
+      },
+      {
+        "command": "claudeQuota.manageAutoResume",
+        "title": "%cmd.manageAutoResume%"
       }
     ],
     "configuration": {
@@ -50,14 +64,30 @@
           "type": "string",
           "enum": [
             "auto",
+            "en",
             "vi",
-            "en"
+            "zh-cn",
+            "ja",
+            "ko",
+            "es",
+            "pt-br",
+            "fr",
+            "de",
+            "ru"
           ],
           "default": "auto",
           "enumDescriptions": [
             "%cfg.language.auto%",
-            "%cfg.language.vi%",
-            "%cfg.language.en%"
+            "English",
+            "Tiếng Việt",
+            "简体中文",
+            "日本語",
+            "한국어",
+            "Español",
+            "Português (Brasil)",
+            "Français",
+            "Deutsch",
+            "Русский"
           ],
           "description": "%cfg.language.desc%"
         },
@@ -95,6 +125,66 @@
           ],
           "default": "right",
           "description": "%cfg.alignment.desc%"
+        },
+        "claudeQuota.notifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "%cfg.notifications.desc%"
+        },
+        "claudeQuota.clickAction": {
+          "type": "string",
+          "enum": [
+            "menu",
+            "refresh"
+          ],
+          "default": "menu",
+          "enumDescriptions": [
+            "%cfg.clickAction.menu%",
+            "%cfg.clickAction.refresh%"
+          ],
+          "description": "%cfg.clickAction.desc%"
+        },
+        "claudeQuota.statusBarFormat": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%cfg.statusBarFormat.desc%"
+        },
+        "claudeQuota.showCostEstimate": {
+          "type": "boolean",
+          "default": true,
+          "description": "%cfg.showCostEstimate.desc%"
+        },
+        "claudeQuota.hideWhenSignedOut": {
+          "type": "boolean",
+          "default": false,
+          "description": "%cfg.hideWhenSignedOut.desc%"
+        },
+        "claudeQuota.autoResume": {
+          "type": "string",
+          "enum": [
+            "off",
+            "selected",
+            "all"
+          ],
+          "default": "selected",
+          "enumDescriptions": [
+            "%cfg.autoResume.off%",
+            "%cfg.autoResume.selected%",
+            "%cfg.autoResume.all%"
+          ],
+          "description": "%cfg.autoResume.desc%"
+        },
+        "claudeQuota.autoResumeMessage": {
+          "type": "string",
+          "default": "continue",
+          "description": "%cfg.autoResumeMessage.desc%"
+        },
+        "claudeQuota.autoResumeDelaySeconds": {
+          "type": "number",
+          "default": 60,
+          "minimum": 0,
+          "maximum": 1800,
+          "description": "%cfg.autoResumeDelay.desc%"
         }
       }
     }
@@ -105,7 +195,7 @@
     "test": "node test/extension.test.js",
     "package": "npx --yes @vscode/vsce package --no-dependencies",
     "publish:vsce": "npx --yes @vscode/vsce publish --no-dependencies",
-    "publish:ovsx": "npx --yes ovsx publish"
+    "publish:ovsx": "npx --yes ovsx publish",
+    "screenshots": "node scripts/generate-screenshots.js"
   }
 }
-
